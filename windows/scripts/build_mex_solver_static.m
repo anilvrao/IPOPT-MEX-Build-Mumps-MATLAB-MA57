@@ -14,7 +14,7 @@ mumps = getenvRequired('MUMPS_ROOT');
 mkl = getenvDefault('MKL_ROOT', 'C:/Program Files (x86)/Intel/oneAPI/mkl/latest');
 intelCompiler = getenvDefault('INTEL_COMPILER_ROOT', 'C:/Program Files (x86)/Intel/oneAPI/compiler/latest');
 ipoptSrc = getenvRequired('IPOPT_SRC');
-hsl = fullfile(root, 'install', 'hsl_stubs', 'lib', 'gpops_hsl_link_stubs.lib');
+hsl = fullfile(root, 'install', 'hsl_stubs', 'lib', 'ipopt_mex_hsl_link_stubs.lib');
 
 libs = { ...
   fullfile(ipopt, 'lib', 'ipopt.lib'), ...

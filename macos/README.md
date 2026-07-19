@@ -1,7 +1,7 @@
-# GPOPS-II IPOPT MEX macOS Build
+# MATLAB IPOPT MEX macOS Build
 
 This directory contains the Apple Silicon macOS build materials and precompiled
-`ipopt.mexmaca64` used for GPOPS-II testing.
+`ipopt.mexmaca64` used for MATLAB testing.
 
 The included MEX supports:
 
@@ -22,7 +22,7 @@ bin/maca64/ipopt.mexmaca64
 SHA256:
 
 ```text
-0c67a6c949fbf19cb12dd830c862b388844308da7c97fd30ad9d90c05b4d3b05
+f625db4a2fd78f890e13d9e5f44190800cc173533b1a52343a9b8766a4ae3f18
 ```
 
 ## Build Summary

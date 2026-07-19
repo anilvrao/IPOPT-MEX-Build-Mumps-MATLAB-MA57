@@ -32,7 +32,7 @@ echo "FC=$(command -v ifx)"
 echo "lib=$(command -v lib || true)"
 
 HSL_OBJ_WIN="$(cygpath -w "$ROOT/build/hsl_link_stubs.obj")"
-HSL_LIB_WIN="$(cygpath -w "$ROOT/install/hsl_stubs/lib/gpops_hsl_link_stubs.lib")"
+HSL_LIB_WIN="$(cygpath -w "$ROOT/install/hsl_stubs/lib/ipopt_mex_hsl_link_stubs.lib")"
 icx -c -O2 -MD -EHsc "$ROOT/src/hsl_link_stubs.cpp" -Fo"$HSL_OBJ_WIN"
 lib -nologo -out:"$HSL_LIB_WIN" "$HSL_OBJ_WIN"
 
@@ -45,7 +45,7 @@ cd "$BLD"
   CFLAGS="-O2 -MD" CXXFLAGS="-O2 -MD -EHsc -Xclang -fcxx-exceptions -Xclang -fexceptions" FCFLAGS="-O2 -MD -fpp" \
   --with-lapack-lflags="$MKLSEQ" \
   --with-hsl-cflags="-I$ROOT/hsl_include" \
-  --with-hsl-lflags="$HSL/lib/gpops_hsl_link_stubs.lib" \
+  --with-hsl-lflags="$HSL/lib/ipopt_mex_hsl_link_stubs.lib" \
   --with-mumps-cflags="-I$MUMPS_ROOT/include -I$MUMPS_ROOT/libseq" \
   --with-mumps-lflags="$MUMPS_ROOT/lib/libdmumps.lib $MUMPS_ROOT/lib/libmumps_common.lib $MUMPS_ROOT/lib/libpord.lib $MUMPS_ROOT/lib/libmpiseq.lib $MKLSEQ"
 

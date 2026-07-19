@@ -1,5 +1,5 @@
 function compile_ipopt_mex_full_mumps59_matlab_ma57()
-% Compile the GPOPS-II IPOPT MEX wrapper against prebuilt static libraries.
+% Compile the MATLAB IPOPT MEX wrapper against prebuilt static libraries.
 %
 % This is a portable template.  The full shell build writes a concrete compile
 % driver with exact paths after building IPOPT and MUMPS.  To use this template

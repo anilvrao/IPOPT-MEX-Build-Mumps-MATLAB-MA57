@@ -1,7 +1,7 @@
-# GPOPS-II IPOPT MEX Builds
+# MATLAB IPOPT MEX Builds
 
 This repository contains build materials and precompiled MATLAB IPOPT MEX files
-prepared for use with GPOPS-II.
+prepared for use from MATLAB.
 
 The included MEX files support the IPOPT linear solvers:
 
@@ -11,7 +11,7 @@ options.ipopt.linear_solver = 'ma57';
 ```
 
 Unsupported linear solver names are rejected before the optimization starts and
-return a clean GPOPS-II/IPOPT error message instead of allowing IPOPT to proceed
+return a clean IPOPT MEX error message instead of allowing IPOPT to proceed
 with an unavailable linear solver.
 
 ## Precompiled MEX Files
@@ -24,8 +24,8 @@ windows/bin/win64/ipopt.mexw64
 Known checksums:
 
 ```text
-0c67a6c949fbf19cb12dd830c862b388844308da7c97fd30ad9d90c05b4d3b05  macos/bin/maca64/ipopt.mexmaca64
-95ea5bc05dd0b14844407050b3b5e0496fe5c45ec391fb08fbe03a52d4847984  windows/bin/win64/ipopt.mexw64
+f625db4a2fd78f890e13d9e5f44190800cc173533b1a52343a9b8766a4ae3f18  macos/bin/maca64/ipopt.mexmaca64
+1e4e13b4a3f30742f31baecc4f15f785614e129cd784966d8801c5f1a73dd83d  windows/bin/win64/ipopt.mexw64
 ```
 
 ## Directory Layout

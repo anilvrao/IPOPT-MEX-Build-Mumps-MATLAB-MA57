@@ -12,15 +12,15 @@ set -euo pipefail
 export MACOSX_DEPLOYMENT_TARGET=12.0
 export PATH="/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
-if [[ -z "${GPOPS_IPOPT_WORK_ROOT:-}" ]]; then
-  echo "Set GPOPS_IPOPT_WORK_ROOT to the parent directory containing the required source/build trees." >&2
+if [[ -z "${IPOPT_MEX_WORK_ROOT:-}" ]]; then
+  echo "Set IPOPT_MEX_WORK_ROOT to the parent directory containing the required source/build trees." >&2
   exit 1
 fi
 
-ROOT="$GPOPS_IPOPT_WORK_ROOT"
-BASE="${GPOPS_IPOPT_BASE:-$ROOT/ipopt_spral_mumps_source_mac_build}"
-BRIDGE="${GPOPS_IPOPT_BRIDGE:-$ROOT/ipopt_mac_internal_ma57_bridge_experiment}"
-BUILD_ROOT="${GPOPS_IPOPT_BUILD_ROOT:-$ROOT/ipopt_mumps59_matlab_ma57_bridge_experiment}"
+ROOT="$IPOPT_MEX_WORK_ROOT"
+BASE="${IPOPT_MEX_BASE:-$ROOT/ipopt_spral_mumps_source_mac_build}"
+BRIDGE="${IPOPT_MEX_BRIDGE:-$ROOT/ipopt_mac_internal_ma57_bridge_experiment}"
+BUILD_ROOT="${IPOPT_MEX_BUILD_ROOT:-$ROOT/ipopt_mumps59_matlab_ma57_bridge_experiment}"
 
 MATLAB="${MATLAB:-/Applications/MATLAB_R2025b.app/bin/matlab}"
 IPOPT_SRC_ORIG="$BASE/src/Ipopt-3.14.19"
@@ -169,31 +169,31 @@ extern "C" {
 
 void ma57ad_()
 {
-  mexErrMsgIdAndTxt("GPOPSII:IpoptMa57Stub",
+  mexErrMsgIdAndTxt("IpoptMex:Ma57Stub",
                     "Internal error: direct MA57AD symbol was called instead of the MATLAB MA57 bridge.");
 }
 
 void ma57bd_()
 {
-  mexErrMsgIdAndTxt("GPOPSII:IpoptMa57Stub",
+  mexErrMsgIdAndTxt("IpoptMex:Ma57Stub",
                     "Internal error: direct MA57BD symbol was called instead of the MATLAB MA57 bridge.");
 }
 
 void ma57cd_()
 {
-  mexErrMsgIdAndTxt("GPOPSII:IpoptMa57Stub",
+  mexErrMsgIdAndTxt("IpoptMex:Ma57Stub",
                     "Internal error: direct MA57CD symbol was called instead of the MATLAB MA57 bridge.");
 }
 
 void ma57ed_()
 {
-  mexErrMsgIdAndTxt("GPOPSII:IpoptMa57Stub",
+  mexErrMsgIdAndTxt("IpoptMex:Ma57Stub",
                     "Internal error: direct MA57ED symbol was called instead of the MATLAB MA57 bridge.");
 }
 
 void ma57id_()
 {
-  mexErrMsgIdAndTxt("GPOPSII:IpoptMa57Stub",
+  mexErrMsgIdAndTxt("IpoptMex:Ma57Stub",
                     "Internal error: direct MA57ID symbol was called instead of the MATLAB MA57 bridge.");
 }
 

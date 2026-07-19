@@ -4,7 +4,7 @@ clear mex;
 scriptDir = fileparts(mfilename('fullpath'));
 root = fileparts(scriptDir);
 mexDir = fullfile(root, 'mex', 'win64_msvc_ifx_mumps_ma57_solver_static');
-overrideMexDir = getenv('GPOPS_TEST_IPOPT_MEX_DIR');
+overrideMexDir = getenv('IPOPT_MEX_TEST_DIR');
 if ~isempty(overrideMexDir)
   mexDir = overrideMexDir;
 end

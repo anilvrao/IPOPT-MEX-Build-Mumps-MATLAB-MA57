@@ -661,7 +661,7 @@ namespace IpoptInterface {
     if (!success && std::strcmp(label, "linear_solver") == 0) {
       mexPrintf("\n");
       mexPrintf("+------------------------------------------------------------+\n");
-      mexPrintf("| GPOPS-II IPOPT MEX ERROR                                   |\n");
+      mexPrintf("| MATLAB IPOPT MEX ERROR                                   |\n");
       mexPrintf("+------------------------------------------------------------+\n");
       mexPrintf("| Invalid IPOPT option: linear_solver                        |\n");
       mexPrintf("|                                                            |\n");

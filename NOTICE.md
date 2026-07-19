@@ -1,7 +1,7 @@
 # Notice
 
 This repository packages build materials and precompiled MATLAB MEX files for a
-GPOPS-II-compatible IPOPT interface.
+IPOPT interface.
 
 The MATLAB MA57 runtime is not included here as a separate library.  The macOS
 and Windows bridge code is designed to use the MA57 runtime supplied by the

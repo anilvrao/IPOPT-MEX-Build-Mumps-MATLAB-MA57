@@ -64,9 +64,9 @@ using Ipopt::SolveStatistics;
 #pragma clang diagnostic pop
 #endif
 
-extern "C" void gpopsRegisterMatlabMa57ForIpopt();
+extern "C" void ipoptMexRegisterMatlabMa57ForIpopt();
 
-static bool gpopsIpoptOptionsRequestMa57(mxArray const* options)
+static bool ipoptMexOptionsRequestMa57(mxArray const* options)
 {
   if (options == nullptr || !mxIsStruct(options)) return false;
 
@@ -85,11 +85,11 @@ static bool gpopsIpoptOptionsRequestMa57(mxArray const* options)
   return isMa57;
 }
 
-static void gpopsPrintInvalidLinearSolverBlock()
+static void ipoptMexPrintInvalidLinearSolverBlock()
 {
   mexPrintf("\n");
   mexPrintf("+------------------------------------------------------------+\n");
-  mexPrintf("| GPOPS-II IPOPT MEX ERROR                                   |\n");
+  mexPrintf("| MATLAB IPOPT MEX ERROR                                   |\n");
   mexPrintf("+------------------------------------------------------------+\n");
   mexPrintf("| Invalid IPOPT option: linear_solver                        |\n");
   mexPrintf("|                                                            |\n");
@@ -102,7 +102,7 @@ static void gpopsPrintInvalidLinearSolverBlock()
   mexEvalString("drawnow;");
 }
 
-static bool gpopsIpoptOptionsHaveInvalidLinearSolver(mxArray const* options)
+static bool ipoptMexOptionsHaveInvalidLinearSolver(mxArray const* options)
 {
   if (options == nullptr || !mxIsStruct(options)) return false;
 
@@ -123,11 +123,11 @@ static bool gpopsIpoptOptionsHaveInvalidLinearSolver(mxArray const* options)
   return !isValid;
 }
 
-static void gpopsReturnInvalidLinearSolver(mxArray* plhs[])
+static void ipoptMexReturnInvalidLinearSolver(mxArray* plhs[])
 {
   static char const* fields[] = {"status", "message"};
 
-  gpopsPrintInvalidLinearSolverBlock();
+  ipoptMexPrintInvalidLinearSolverBlock();
 
   plhs[0] = mxCreateDoubleMatrix(0, 0, mxREAL);
   plhs[1] = mxCreateStructMatrix(1, 1, 2, fields);
@@ -302,13 +302,13 @@ mexFunction(
 
   try {
 
-    if (nrhs == 3 && gpopsIpoptOptionsHaveInvalidLinearSolver(prhs[2])) {
-      gpopsReturnInvalidLinearSolver(plhs);
+    if (nrhs == 3 && ipoptMexOptionsHaveInvalidLinearSolver(prhs[2])) {
+      ipoptMexReturnInvalidLinearSolver(plhs);
       return;
     }
 
-    if (nrhs == 3 && gpopsIpoptOptionsRequestMa57(prhs[2])) {
-      gpopsRegisterMatlabMa57ForIpopt();
+    if (nrhs == 3 && ipoptMexOptionsRequestMa57(prhs[2])) {
+      ipoptMexRegisterMatlabMa57ForIpopt();
     }
 
     IpoptInterface::mexFunction_internal( nlhs, plhs, nrhs, prhs );

@@ -46,14 +46,14 @@ MatlabMa57& lib()
   if (!L->handle) {
     mxArray* lhs[1] = {nullptr};
     if (mexCallMATLAB(1, lhs, 0, nullptr, "matlabroot") != 0 || lhs[0] == nullptr) {
-      std::fprintf(stderr, "GPOPS-II MA57 bridge: unable to query matlabroot\n");
+      std::fprintf(stderr, "MATLAB MA57 bridge: unable to query matlabroot\n");
       std::abort();
     }
 
     char* root = mxArrayToString(lhs[0]);
     mxDestroyArray(lhs[0]);
     if (root == nullptr) {
-      std::fprintf(stderr, "GPOPS-II MA57 bridge: unable to convert matlabroot to a path\n");
+      std::fprintf(stderr, "MATLAB MA57 bridge: unable to convert matlabroot to a path\n");
       std::abort();
     }
 
@@ -62,7 +62,7 @@ MatlabMa57& lib()
 
     L->handle = dlopen(path.c_str(), RTLD_LAZY | RTLD_LOCAL);
     if (!L->handle) {
-      std::fprintf(stderr, "GPOPS-II MA57 bridge: unable to load %s: %s\n", path.c_str(), dlerror());
+      std::fprintf(stderr, "MATLAB MA57 bridge: unable to load %s: %s\n", path.c_str(), dlerror());
       std::abort();
     }
     L->ma57ad = reinterpret_cast<mw_ma57ad_f>(dlsym(L->handle, "ma57ad_"));
@@ -71,7 +71,7 @@ MatlabMa57& lib()
     L->ma57ed = reinterpret_cast<mw_ma57ed_f>(dlsym(L->handle, "ma57ed_"));
     L->ma57id = reinterpret_cast<mw_ma57id_f>(dlsym(L->handle, "ma57id_"));
     if (!L->ma57ad || !L->ma57bd || !L->ma57cd || !L->ma57ed || !L->ma57id) {
-      std::fprintf(stderr, "GPOPS-II MA57 bridge: unable to resolve required MA57 symbols\n");
+      std::fprintf(stderr, "MATLAB MA57 bridge: unable to resolve required MA57 symbols\n");
       std::abort();
     }
   }
@@ -97,7 +97,7 @@ void to32(ipma57int* x, const std::vector<mwma57int>& y)
   for (std::size_t k = 0; k < y.size(); ++k) {
     if (y[k] > static_cast<mwma57int>(std::numeric_limits<ipma57int>::max()) ||
         y[k] < static_cast<mwma57int>(std::numeric_limits<ipma57int>::min())) {
-      std::fprintf(stderr, "GPOPS-II MA57 bridge: MATLAB MA57 returned an integer outside Ipopt range\n");
+      std::fprintf(stderr, "MATLAB MA57 bridge: MATLAB MA57 returned an integer outside Ipopt range\n");
       std::abort();
     }
     x[k] = static_cast<ipma57int>(y[k]);
@@ -253,7 +253,7 @@ void bridge_ma57i(double* cntl, ipma57int* icntl)
 
 } // namespace
 
-extern "C" void gpopsRegisterMatlabMa57ForIpopt()
+extern "C" void ipoptMexRegisterMatlabMa57ForIpopt()
 {
   Ipopt::Ma57TSolverInterface::SetFunctions(&bridge_ma57a, &bridge_ma57b,
                                             &bridge_ma57c, &bridge_ma57e,

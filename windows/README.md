@@ -1,7 +1,7 @@
-# GPOPS-II IPOPT MEX Windows Build
+# MATLAB IPOPT MEX Windows Build
 
 This directory contains the build scripts and small MATLAB MEX interface sources
-used to build a Windows `ipopt.mexw64` for GPOPS-II with:
+used to build a Windows `ipopt.mexw64` for MATLAB with:
 
 - IPOPT statically linked into the MEX
 - MUMPS statically linked into the MEX
@@ -57,7 +57,7 @@ Obtain those separately:
 - MATLAB
 - MSYS2 for running the IPOPT autotools configure/make steps
 
-The MEX interface source files in `src/` are the GPOPS-II-compatible interface
+The MEX interface source files in `src/` are the IPOPT MEX interface
 sources, not the OPTI Toolbox MATLAB wrapper.
 
 ## Environment Variables
@@ -129,7 +129,7 @@ MATLAB.
 The known checksum for the included Windows MEX is:
 
 ```text
-95EA5BC05DD0B14844407050B3B5E0496FE5C45EC391FB08FBE03A52D4847984
+1E4E13B4A3F30742F31BAECC4F15F785614E129CD784966D8801C5F1A73DD83D
 ```
 
 ## Test
@@ -161,7 +161,7 @@ runtime DLLs.
 The final development-machine test MEX had SHA256:
 
 ```text
-95EA5BC05DD0B14844407050B3B5E0496FE5C45EC391FB08FBE03A52D4847984
+1E4E13B4A3F30742F31BAECC4F15F785614E129CD784966D8801C5F1A73DD83D
 ```
 
 It passed HS071 smoke tests in MATLAB R2024a and MATLAB R2026a.
