@@ -1,0 +1,8 @@
+#ifndef COINHSL_CONFIG_H
+#define COINHSL_CONFIG_H
+
+#define COINHSL_HAS_MA27 1
+#define COINHSL_HAS_MA28 1
+#define COINHSL_HAS_MA57 1
+
+#endif
