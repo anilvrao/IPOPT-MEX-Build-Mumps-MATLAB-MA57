@@ -42,7 +42,7 @@ cd "$BLD"
   --enable-static=yes --enable-shared=no --disable-java --disable-pardisomkl \
   --disable-linear-solver-loader --without-asl \
   CC=icx CXX=icx FC=ifx F77=ifx \
-  CFLAGS="-O2 -MD" CXXFLAGS="-O2 -MD -EHsc -Xclang -fcxx-exceptions -Xclang -fexceptions" FCFLAGS="-O2 -MD -fpp" \
+  CFLAGS="-O2 -MD" CXXFLAGS="-O2 -MD -EHsc -DFUNNY_MA57_FINT -Xclang -fcxx-exceptions -Xclang -fexceptions" FCFLAGS="-O2 -MD -fpp" \
   --with-lapack-lflags="$MKLSEQ" \
   --with-hsl-cflags="-I$ROOT/hsl_include" \
   --with-hsl-lflags="$HSL/lib/ipopt_mex_hsl_link_stubs.lib" \

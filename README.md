@@ -1,104 +1,61 @@
 # MATLAB IPOPT MEX Builds
 
-This repository contains build materials and precompiled MATLAB IPOPT MEX files
-prepared for use from MATLAB.
+This repository contains build materials and precompiled MATLAB IPOPT MEX files for Apple Silicon macOS and 64-bit Windows.
 
-The included MEX files support the IPOPT linear solvers:
+Both builds provide exactly these linear solvers:
 
 ```matlab
 options.ipopt.linear_solver = 'mumps';
 options.ipopt.linear_solver = 'ma57';
 ```
 
-Unsupported linear solver names are rejected before the optimization starts and
-return a clean IPOPT MEX error message instead of allowing IPOPT to proceed
-with an unavailable linear solver.
+Unsupported solver names are rejected before optimization starts and return `info.status = -999`. SPRAL is not built or linked.
 
-## Precompiled MEX Files
+## 2026-08-02 release candidate
 
-```text
-macos/bin/maca64/ipopt.mexmaca64
-windows/bin/win64/ipopt.mexw64
-```
+| Platform | Binary | SHA-256 |
+|---|---|---|
+| Apple Silicon macOS | `macos/bin/maca64/ipopt.mexmaca64` | `64808ff656291c947c2c7a171211d9913d8d668c62e1415b106b92aa907a5054` |
+| 64-bit Windows | `windows/bin/win64/ipopt.mexw64` | `adbf4bc9bf8d9d67c89cbfb3b7cd8cdd000c9dba4d08bff07975e406beda8835` |
 
-Known checksums:
-
-```text
-f625db4a2fd78f890e13d9e5f44190800cc173533b1a52343a9b8766a4ae3f18  macos/bin/maca64/ipopt.mexmaca64
-1e4e13b4a3f30742f31baecc4f15f785614e129cd784966d8801c5f1a73dd83d  windows/bin/win64/ipopt.mexw64
-```
-
-## Directory Layout
-
-```text
-macos/
-  README.md
-  bin/maca64/ipopt.mexmaca64
-  scripts/
-  src/
-  patches/
-  tests/
-
-windows/
-  README.md
-  bin/win64/ipopt.mexw64
-  scripts/
-  src/
-  third_party/
-```
-
-## macOS Build Summary
-
-The macOS Apple Silicon MEX was built with:
+The two builds use:
 
 - IPOPT 3.14.19
-- MUMPS 5.9.0
-- an internal MATLAB MA57 bridge
-- MATLAB R2025b
-- Apple Silicon target `maca64`
+- official MUMPS 5.9.1 source (SHA-256 `659c9b57646b5a003ac618baa1faf9dd2044e46c732b3daaccbc7158003e1b46`)
+- MATLAB's installed MA57 library through an internal bridge
+- statically linked IPOPT and MUMPS code
+- fault-containment patches for restoration and line-search failure paths
+- no SPRAL
 
-The MEX does not redistribute the MATLAB MA57 runtime as a separate library.  At
-runtime, the internal bridge loads MATLAB's installed MA57 runtime from:
+MA57 is not redistributed. The bridge loads the library supplied by the active MATLAB installation (`libmwma57.dylib` on macOS or `libmwma57.dll` on Windows).
+
+## Validation
+
+The macOS binary has been exercised with GPOPS-II examples using MUMPS and MA57 in MATLAB R2024b, R2025a, R2025b, and R2026a on Apple Silicon without the previous MATLAB crashes. The Windows binary passed the MUMPS, MA57, and invalid-solver HS071 tests in R2024a and R2026a; it was also exercised with GPOPS-II examples in R2024b and R2026a.
+
+Ctrl-C during a native IPOPT solve is not claimed as a supported interruption mechanism. GPOPS-II can still be stopped between mesh-refinement iterations.
+
+## Layout
 
 ```text
-matlabroot/bin/maca64/libmwma57.dylib
+macos/                       Apple Silicon binary, sources, patches, scripts, tests
+windows/                     Windows binary, sources, patches, scripts, tests
+windows/BUILD_MANIFEST.txt   Exact Windows build and validation record
 ```
 
-The macOS MEX has no Homebrew runtime library dependencies.
+See [macos/README.md](macos/README.md) and [windows/README.md](windows/README.md) for platform-specific build and test instructions.
 
-## Windows Build Summary
-
-The Windows MEX was built with:
-
-- IPOPT 3.14.19
-- MUMPS
-- an internal MATLAB MA57 bridge
-- Microsoft Visual Studio / Intel oneAPI build tools
-- MATLAB on Windows target `win64`
-
-See [windows/README.md](windows/README.md) for the Windows-specific build notes.
-
-## MATLAB Smoke Test
-
-To test the macOS MEX from MATLAB:
+## macOS smoke test
 
 ```matlab
-addpath('/path/to/this/repository/macos/bin/maca64','-begin')
+addpath('/path/to/repository/macos/bin/maca64','-begin')
 clear mex
 rehash
 which ipopt -all
-run('/path/to/this/repository/macos/tests/test_hs071_full_mumps59_ma57.m')
-run('/path/to/this/repository/macos/tests/test_invalid_solver_guard.m')
+run('/path/to/repository/macos/tests/test_hs071_full_mumps59_ma57.m')
+run('/path/to/repository/macos/tests/test_invalid_solver_guard.m')
 ```
 
-To test the Windows MEX, see [windows/README.md](windows/README.md).
+## Third-party code
 
-## Notes on Third-Party Code
-
-This repository contains build glue, patches, small MEX-interface sources, and
-precompiled MATLAB MEX files.  Large third-party source trees are intentionally
-not included.  Obtain IPOPT, MUMPS, compiler tools, and MATLAB separately.
-
-The MATLAB MA57 runtime is provided by the user's MATLAB installation and is not
-included here as a separate redistributable HSL library.
-
+Large third-party source trees are intentionally excluded. Obtain IPOPT, MUMPS, compiler tools, and MATLAB separately. MATLAB's MA57 runtime is supplied by the user's MATLAB installation and is not included as a separate library.
