@@ -1,0 +1,5 @@
+# Required upstream source pin
+659c9b57646b5a003ac618baa1faf9dd2044e46c732b3daaccbc7158003e1b46  MUMPS_5.9.1.tar.gz
+
+# Validated Mac behavioral reference only; not usable on Windows
+64808ff656291c947c2c7a171211d9913d8d668c62e1415b106b92aa907a5054  reference-mac/ipopt.mexmaca64

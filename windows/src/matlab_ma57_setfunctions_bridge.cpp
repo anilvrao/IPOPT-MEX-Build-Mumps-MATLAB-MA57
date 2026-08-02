@@ -211,6 +211,16 @@ void bridge_ma57e(ipma57int* n, ipma57int* ic, ipma57int* keep,
                   ipma57int* newifc, ipma57int* linew, ipma57int* info)
 {
   MatlabMa57& L = lib();
+  // The handoff build must compile Ipopt and the MEX with FUNNY_MA57_FINT,
+  // making both integer types ptrdiff_t. Forward MA57E directly. Copying
+  // IFACT using INFO(2) after MA57B reports insufficient workspace caused
+  // the validated Mac build to read beyond the old allocation and crash.
+  static_assert(sizeof(ipma57int) == sizeof(mwma57int),
+                "MA57E direct bridge requires matching integer widths");
+  L.ma57ed(n, ic, keep, fact, lfact, newfac, lnew, ifact, lifact,
+           newifc, linew, info);
+  return;
+
   mwma57int n64 = *n, ic64 = *ic, lfact64 = *lfact, lnew64 = *lnew;
   mwma57int lifact64 = *lifact, linew64 = *linew;
   std::size_t keep_len = 5 * safe_nonnegative(*n) + 64;

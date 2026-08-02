@@ -1,0 +1,44 @@
+LPORDDIR = $(topdir)/PORD/lib/
+IPORD    = -I$(topdir)/PORD/include/
+PATHPORD = -LIBPATH:$(LPORDDIR)
+LPORD    = libpord.lib
+
+ORDERINGSF  = -Dpord
+ORDERINGSC  = $(ORDERINGSF)
+
+PATHORDERINGS = $(PATHPORD)
+LORDERINGS = $(LPORD)
+IORDERINGSF =
+IORDERINGSC = $(IPORD)
+
+PLAT    =
+LIBEXT  = .lib
+LIBEXT_SHARED  = .dll
+SONAME =
+OUTC    = -Fo
+OUTF    = -Fo
+RM      = /bin/rm -f
+
+CC      = cl
+FC      = ifx
+FL      = ifx
+AR      = lib -out:
+RANLIB  = echo
+
+INCSEQ  = -I$(topdir)/libseq
+LIBSEQ  = $(topdir)/libseq/libmpiseq.lib
+LIBSEQNEEDED = libseqneeded
+
+MKLROOT ?= C:/Program Files (x86)/Intel/oneAPI/mkl/latest
+PATHMKL = -LIBPATH:"$(MKLROOT)/lib"
+LIBBLAS = mkl_rt.lib
+LIBOTHERS = -link $(PATHORDERINGS) $(PATHMKL)
+
+CDEFS   = -DAdd_
+
+OPTF    = -O2 -MD -Dintel_ -fpp /fp:precise
+OPTL    =
+OPTC    = -O2 -MD /fp:precise
+
+INCS = $(INCSEQ)
+LIBS = $(LIBSEQ)

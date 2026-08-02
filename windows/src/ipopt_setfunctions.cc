@@ -89,7 +89,7 @@ static void ipoptMexPrintInvalidLinearSolverBlock()
 {
   mexPrintf("\n");
   mexPrintf("+------------------------------------------------------------+\n");
-  mexPrintf("| MATLAB IPOPT MEX ERROR                                   |\n");
+  mexPrintf("| IPOPT MEX ERROR                                          |\n");
   mexPrintf("+------------------------------------------------------------+\n");
   mexPrintf("| Invalid IPOPT option: linear_solver                        |\n");
   mexPrintf("|                                                            |\n");

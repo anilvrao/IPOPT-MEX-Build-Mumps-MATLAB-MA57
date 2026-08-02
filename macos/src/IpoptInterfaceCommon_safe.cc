@@ -48,6 +48,9 @@
 #pragma clang diagnostic pop
 #endif
 
+extern "C" bool utIsInterruptPending();
+extern "C" void utSetInterruptPending(bool);
+
 using Ipopt::ApplicationReturnStatus;
 using Ipopt::IpoptApplication;
 using Ipopt::SmartPtr;
@@ -57,6 +60,16 @@ using Ipopt::SmartPtr;
 using Ipopt::Snprintf;
 
 namespace IpoptInterface {
+
+  static
+  bool
+  matlabCtrlCRequested() {
+    if ( utIsInterruptPending() ) {
+      utSetInterruptPending(false);
+      return true;
+    }
+    return false;
+  }
 
   /*
   //   ____
@@ -1887,6 +1900,11 @@ namespace IpoptInterface {
   ) {
 
     IPOPT_DEBUG("In MatlabProgram::intermediate_callback");
+
+    if ( matlabCtrlCRequested() ) {
+      mexPrintf("\nIPOPT interrupted by Ctrl-C.\n");
+      return false;
+    }
 
     if ( m_funcs.iterFuncIsAvailable() )
       return m_funcs.iterCallback(

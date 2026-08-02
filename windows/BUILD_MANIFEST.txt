@@ -1,0 +1,58 @@
+IPOPT R7 Windows MEX handoff build
+Built: 2026-08-02
+
+Final MEX in this repository:
+windows\bin\win64\ipopt.mexw64
+
+SHA256:
+ADBF4BC9BF8D9D67C89CBFB3B7CD8CDD000C9DBA4D08BFF07975E406BEDA8835
+
+Source/build inputs:
+- Ipopt 3.14.19 official source release
+- Applied Mac handoff patches to sandboxed Ipopt copy:
+  - src\Algorithm\IpBacktrackingLineSearch.cpp
+  - src\Algorithm\IpIpoptAlg.cpp
+  - src\Algorithm\IpRestoMinC_1Nrm.cpp
+- MUMPS 5.9.1 official source archive
+- MUMPS 5.9.1 SHA256 verified:
+  659C9B57646B5A003AC618BAA1FAF9DD2044E46C732B3DAACCBC7158003E1B46
+- Handoff MEX sources:
+  - src\ipopt_setfunctions.cc
+  - src\IpoptInterfaceCommon_safe.cc
+  - src\matlab_ma57_setfunctions_bridge.cpp
+  - src\ma28_dependency_detector_unavailable.cpp
+
+Linear solvers:
+- MUMPS: source-built MUMPS 5.9.1, linked into MEX
+- MA57: MATLAB built-in libmwma57.dll loaded at runtime through internal bridge
+- SPRAL: not built or linked
+
+Compiler/toolchain:
+- Microsoft Visual C++ 2022 x64
+- Intel oneAPI ifx/icx 2025.3.2 environment
+- MATLAB R2024a MEX compiler for final ipopt.mexw64
+
+Validation:
+- MATLAB R2024a HS071 invalid linear_solver='spral': returned info.status = -999
+- MATLAB R2024a HS071 linear_solver='mumps': solved, status = 0
+- MATLAB R2024a HS071 linear_solver='ma57': solved, status = 0
+- MATLAB R2026a HS071 invalid linear_solver='spral': returned info.status = -999
+- MATLAB R2026a HS071 linear_solver='mumps': solved, status = 0
+- MATLAB R2026a HS071 linear_solver='ma57': solved, status = 0
+
+Dependency check:
+dumpbin /dependents reported only MATLAB, MSVC/UCRT, KERNEL32, imagehlp dependencies:
+- libmx.dll
+- libmex.dll
+- KERNEL32.dll
+- MSVCP140.dll
+- VCRUNTIME140.dll
+- VCRUNTIME140_1.dll
+- api-ms-win-crt-*.dll
+- imagehlp.dll
+
+No IPOPT, MUMPS, SPRAL, GNU C++, GNU Fortran, MSYS, or MinGW runtime DLL dependencies were reported by dumpbin.
+dumpbin /symbols found no SPRAL/GNU/MSYS/MinGW symbols.
+
+Note:
+The binary still contains Ipopt's built-in option-description text for "SPRAL Linear Solver"; this is not a SPRAL library dependency or symbol. The invalid-solver preflight rejects linear_solver='spral' before IPOPT starts.

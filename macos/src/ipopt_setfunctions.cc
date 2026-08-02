@@ -42,6 +42,7 @@
 #include "IpJournalist.hpp"
 #include "IpIpoptApplication.hpp"
 #include "IpSolveStatistics.hpp"
+#include "IpAlgTypes.hpp"
 
 #include <cstring>
 
@@ -64,9 +65,9 @@ using Ipopt::SolveStatistics;
 #pragma clang diagnostic pop
 #endif
 
-extern "C" void ipoptMexRegisterMatlabMa57ForIpopt();
+extern "C" void gpopsRegisterMatlabMa57ForIpopt();
 
-static int ipoptMexRequestedLinearSolver(mxArray const* options)
+static int gpopsIpoptRequestedLinearSolver(mxArray const* options)
 {
   if (options == nullptr || !mxIsStruct(options)) return 0;
 
@@ -104,13 +105,13 @@ static int ipoptMexRequestedLinearSolver(mxArray const* options)
   return solverCode;
 }
 
-static bool ipoptMexInvalidIpoptLinearSolver(mxArray const* options)
+static bool gpopsInvalidIpoptLinearSolver(mxArray const* options)
 {
-  int const solverCode = ipoptMexRequestedLinearSolver(options);
+  int const solverCode = gpopsIpoptRequestedLinearSolver(options);
   return solverCode < 0;
 }
 
-static void ipoptMexReturnInvalidLinearSolver(int nlhs, mxArray* plhs[], mxArray const* x0)
+static void gpopsReturnInvalidLinearSolver(int nlhs, mxArray* plhs[], mxArray const* x0)
 {
   static char const* message =
     "Invalid IPOPT option: linear_solver. Supported values are 'mumps' and 'ma57'.";
@@ -142,7 +143,7 @@ static void ipoptMexReturnInvalidLinearSolver(int nlhs, mxArray* plhs[], mxArray
   }
   mexPrintf("\n");
   mexPrintf("+------------------------------------------------------------+\n");
-  mexPrintf("| MATLAB IPOPT MEX ERROR                                   |\n");
+  mexPrintf("| IPOPT MEX ERROR                                            |\n");
   mexPrintf("+------------------------------------------------------------+\n");
   mexPrintf("| Invalid IPOPT option: linear_solver                        |\n");
   mexPrintf("|                                                            |\n");
@@ -155,9 +156,45 @@ static void ipoptMexReturnInvalidLinearSolver(int nlhs, mxArray* plhs[], mxArray
   mexEvalString("drawnow;");
 }
 
-static bool ipoptMexOptionsRequestMa57(mxArray const* options)
+static void gpopsReturnIpoptExceptionStatus(
+  int nlhs,
+  mxArray* plhs[],
+  mxArray const* x0,
+  int status,
+  char const* headline,
+  char const* message
+)
 {
-  return ipoptMexRequestedLinearSolver(options) == 2;
+  mexPrintf("\n");
+  mexPrintf("+------------------------------------------------------------+\n");
+  mexPrintf("| GPOPS-II IPOPT MEX WARNING                                 |\n");
+  mexPrintf("+------------------------------------------------------------+\n");
+  mexPrintf("| %-58s |\n", headline);
+  mexPrintf("| The optimization was stopped and control was returned       |\n");
+  mexPrintf("| safely to MATLAB.                                          |\n");
+  mexPrintf("+------------------------------------------------------------+\n\n");
+
+  if (nlhs > 0) {
+    plhs[0] = mxDuplicateArray(x0);
+  }
+
+  if (nlhs > 1) {
+    char const* fields[] = {"status", "message"};
+    plhs[1] = mxCreateStructMatrix(1, 1, 2, fields);
+    mxSetField(plhs[1], 0, "status", mxCreateDoubleScalar(static_cast<double>(status)));
+    mxSetField(plhs[1], 0, "message", mxCreateString(message));
+  }
+
+  for (int k = 2; k < nlhs; ++k) {
+    plhs[k] = mxCreateDoubleMatrix(0, 0, mxREAL);
+  }
+
+  mexEvalString("drawnow;");
+}
+
+static bool gpopsIpoptOptionsRequestMa57(mxArray const* options)
+{
+  return gpopsIpoptRequestedLinearSolver(options) == 2;
 }
 
 /*
@@ -286,7 +323,124 @@ namespace IpoptInterface {
 
     // Ask Ipopt to solve the problem.
     IPOPT_DEBUG("\nCALL optimize\n");
-    exitstatus = app.OptimizeTNLP(program);
+    try {
+      exitstatus = app.OptimizeTNLP(program);
+    } catch ( Ipopt::LOCALLY_INFEASIBLE & ) {
+      mexPrintf("\n");
+      mexPrintf("+------------------------------------------------------------+\n");
+      mexPrintf("| GPOPS-II IPOPT MEX WARNING                                 |\n");
+      mexPrintf("+------------------------------------------------------------+\n");
+      mexPrintf("| IPOPT reported local infeasibility.                        |\n");
+      mexPrintf("| The optimization was stopped and control was returned       |\n");
+      mexPrintf("| safely to MATLAB.                                          |\n");
+      mexPrintf("+------------------------------------------------------------+\n\n");
+      mexEvalString("drawnow;");
+      info.setExitStatus(Ipopt::Restoration_Failed);
+      int msgField = mxAddField(plhs[1], "message");
+      if (msgField >= 0) {
+        mxSetFieldByNumber(plhs[1], 0, msgField, mxCreateString("IPOPT reported local infeasibility."));
+      }
+      mxArray* currentx = info.getfield_mx("x");
+      if (currentx != nullptr && mxGetNumberOfElements(currentx) == funcs.numVariables()) {
+        plhs[0] = mxDuplicateArray(currentx);
+      } else {
+        info.setfield(prhs[0], "x");
+        plhs[0] = mxDuplicateArray(prhs[0]);
+      }
+      return;
+    } catch ( Ipopt::STEP_COMPUTATION_FAILED & ) {
+      mexPrintf("\n");
+      mexPrintf("+------------------------------------------------------------+\n");
+      mexPrintf("| GPOPS-II IPOPT MEX WARNING                                 |\n");
+      mexPrintf("+------------------------------------------------------------+\n");
+      mexPrintf("| IPOPT reported a step computation failure.                 |\n");
+      mexPrintf("| The optimization was stopped and control was returned       |\n");
+      mexPrintf("| safely to MATLAB.                                          |\n");
+      mexPrintf("+------------------------------------------------------------+\n\n");
+      mexEvalString("drawnow;");
+      info.setExitStatus(Ipopt::Error_In_Step_Computation);
+      int msgField = mxAddField(plhs[1], "message");
+      if (msgField >= 0) {
+        mxSetFieldByNumber(plhs[1], 0, msgField, mxCreateString("IPOPT reported a step computation failure."));
+      }
+      mxArray* currentx = info.getfield_mx("x");
+      if (currentx != nullptr && mxGetNumberOfElements(currentx) == funcs.numVariables()) {
+        plhs[0] = mxDuplicateArray(currentx);
+      } else {
+        info.setfield(prhs[0], "x");
+        plhs[0] = mxDuplicateArray(prhs[0]);
+      }
+      return;
+    } catch ( Ipopt::IpoptException & ) {
+      mexPrintf("\n");
+      mexPrintf("+------------------------------------------------------------+\n");
+      mexPrintf("| GPOPS-II IPOPT MEX WARNING                                 |\n");
+      mexPrintf("+------------------------------------------------------------+\n");
+      mexPrintf("| IPOPT reported an internal exception.                      |\n");
+      mexPrintf("| The optimization was stopped and control was returned       |\n");
+      mexPrintf("| safely to MATLAB.                                          |\n");
+      mexPrintf("+------------------------------------------------------------+\n\n");
+      mexEvalString("drawnow;");
+      info.setExitStatus(Ipopt::Unrecoverable_Exception);
+      int msgField = mxAddField(plhs[1], "message");
+      if (msgField >= 0) {
+        mxSetFieldByNumber(plhs[1], 0, msgField, mxCreateString("IPOPT reported an internal exception."));
+      }
+      mxArray* currentx = info.getfield_mx("x");
+      if (currentx != nullptr && mxGetNumberOfElements(currentx) == funcs.numVariables()) {
+        plhs[0] = mxDuplicateArray(currentx);
+      } else {
+        info.setfield(prhs[0], "x");
+        plhs[0] = mxDuplicateArray(prhs[0]);
+      }
+      return;
+    } catch ( std::exception & ) {
+      mexPrintf("\n");
+      mexPrintf("+------------------------------------------------------------+\n");
+      mexPrintf("| GPOPS-II IPOPT MEX WARNING                                 |\n");
+      mexPrintf("+------------------------------------------------------------+\n");
+      mexPrintf("| IPOPT reported a standard C++ exception.                   |\n");
+      mexPrintf("| The optimization was stopped and control was returned       |\n");
+      mexPrintf("| safely to MATLAB.                                          |\n");
+      mexPrintf("+------------------------------------------------------------+\n\n");
+      mexEvalString("drawnow;");
+      info.setExitStatus(Ipopt::Unrecoverable_Exception);
+      int msgField = mxAddField(plhs[1], "message");
+      if (msgField >= 0) {
+        mxSetFieldByNumber(plhs[1], 0, msgField, mxCreateString("IPOPT reported a standard C++ exception."));
+      }
+      mxArray* currentx = info.getfield_mx("x");
+      if (currentx != nullptr && mxGetNumberOfElements(currentx) == funcs.numVariables()) {
+        plhs[0] = mxDuplicateArray(currentx);
+      } else {
+        info.setfield(prhs[0], "x");
+        plhs[0] = mxDuplicateArray(prhs[0]);
+      }
+      return;
+    } catch ( ... ) {
+      mexPrintf("\n");
+      mexPrintf("+------------------------------------------------------------+\n");
+      mexPrintf("| GPOPS-II IPOPT MEX WARNING                                 |\n");
+      mexPrintf("+------------------------------------------------------------+\n");
+      mexPrintf("| IPOPT reported an unknown exception.                       |\n");
+      mexPrintf("| The optimization was stopped and control was returned       |\n");
+      mexPrintf("| safely to MATLAB.                                          |\n");
+      mexPrintf("+------------------------------------------------------------+\n\n");
+      mexEvalString("drawnow;");
+      info.setExitStatus(Ipopt::Unrecoverable_Exception);
+      int msgField = mxAddField(plhs[1], "message");
+      if (msgField >= 0) {
+        mxSetFieldByNumber(plhs[1], 0, msgField, mxCreateString("IPOPT reported an unknown exception."));
+      }
+      mxArray* currentx = info.getfield_mx("x");
+      if (currentx != nullptr && mxGetNumberOfElements(currentx) == funcs.numVariables()) {
+        plhs[0] = mxDuplicateArray(currentx);
+      } else {
+        info.setfield(prhs[0], "x");
+        plhs[0] = mxDuplicateArray(prhs[0]);
+      }
+      return;
+    }
     info.setExitStatus(exitstatus);
     plhs[0] = mxDuplicateArray(info.getfield_mx("x"));
 
@@ -326,16 +480,40 @@ mexFunction(
 
   try {
 
-    if (nrhs == 3 && ipoptMexInvalidIpoptLinearSolver(prhs[2])) {
-      ipoptMexReturnInvalidLinearSolver(nlhs, plhs, prhs[0]);
+    if (nrhs == 3 && gpopsInvalidIpoptLinearSolver(prhs[2])) {
+      gpopsReturnInvalidLinearSolver(nlhs, plhs, prhs[0]);
       return;
     }
 
-    if (nrhs == 3 && ipoptMexOptionsRequestMa57(prhs[2])) {
-      ipoptMexRegisterMatlabMa57ForIpopt();
+    if (nrhs == 3 && gpopsIpoptOptionsRequestMa57(prhs[2])) {
+      gpopsRegisterMatlabMa57ForIpopt();
     }
 
     IpoptInterface::mexFunction_internal( nlhs, plhs, nrhs, prhs );
+
+  } catch ( Ipopt::LOCALLY_INFEASIBLE & ) {
+
+    gpopsReturnIpoptExceptionStatus(
+      nlhs, plhs, prhs[0], static_cast<int>(Ipopt::Restoration_Failed),
+      "IPOPT reported local infeasibility.",
+      "IPOPT reported local infeasibility."
+    );
+
+  } catch ( Ipopt::STEP_COMPUTATION_FAILED & ) {
+
+    gpopsReturnIpoptExceptionStatus(
+      nlhs, plhs, prhs[0], static_cast<int>(Ipopt::Error_In_Step_Computation),
+      "IPOPT reported a step computation failure.",
+      "IPOPT reported a step computation failure."
+    );
+
+  } catch ( Ipopt::IpoptException & ) {
+
+    gpopsReturnIpoptExceptionStatus(
+      nlhs, plhs, prhs[0], static_cast<int>(Ipopt::Unrecoverable_Exception),
+      "IPOPT reported an internal exception.",
+      "IPOPT reported an internal exception."
+    );
 
   } catch ( std::exception & error ) {
 
