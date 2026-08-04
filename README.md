@@ -11,11 +11,11 @@ options.ipopt.linear_solver = 'ma57';
 
 Unsupported solver names are rejected before optimization starts and return `info.status = -999`. SPRAL is not built or linked.
 
-## 2026-08-02 release candidate
+## 2026-08-03 release candidate
 
 | Platform | Binary | SHA-256 |
 |---|---|---|
-| Apple Silicon macOS | `macos/bin/maca64/ipopt.mexmaca64` | `64808ff656291c947c2c7a171211d9913d8d668c62e1415b106b92aa907a5054` |
+| Apple Silicon macOS | `macos/bin/maca64/ipopt.mexmaca64` | `3b097ad0af33e4daf193325934fa41b1b83fc6325e5df60f103b4840b4476f3a` |
 | 64-bit Windows | `windows/bin/win64/ipopt.mexw64` | `adbf4bc9bf8d9d67c89cbfb3b7cd8cdd000c9dba4d08bff07975e406beda8835` |
 | x86-64 Linux | `linux/bin/mexa64/ipopt.mexa64` | `d29971b6b092764708594e207cafe27057ed06e32e140428f84732afc99e1e3c` |
 
@@ -32,7 +32,7 @@ MA57 is not redistributed. The bridge loads the library supplied by the active M
 
 ## Validation
 
-The macOS binary has been exercised with optimization test problems using MUMPS and MA57 in MATLAB R2024b, R2025a, R2025b, and R2026a on Apple Silicon without the previous MATLAB crashes. The Windows binary passed the MUMPS, MA57, and invalid-solver HS071 tests in R2024a and R2026a; it was also exercised with optimization test problems in R2024b and R2026a.
+The macOS binary has been exercised with optimization test problems using MUMPS and MA57 in MATLAB R2024b, R2025a, R2025b, and R2026a on Apple Silicon without the previous MATLAB crashes. The rebuilt MUMPS 5.9.1 binary passed HS071 with both solvers, both invalid-solver option layouts, multiple mesh-refinement iterations, and difficult launch regressions. The Windows binary passed the MUMPS, MA57, and invalid-solver HS071 tests in R2024a and R2026a; it was also exercised with optimization test problems in R2024b and R2026a.
 
 Ctrl-C during a native IPOPT solve is not claimed as a supported interruption mechanism. Applications can still stop between separate IPOPT invocations.
 
