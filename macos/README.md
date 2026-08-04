@@ -6,7 +6,7 @@ This directory contains the Apple Silicon `ipopt.mexmaca64`, its MEX-interface s
 
 ```text
 bin/maca64/ipopt.mexmaca64
-SHA-256: 64808ff656291c947c2c7a171211d9913d8d668c62e1415b106b92aa907a5054
+SHA-256: 3b097ad0af33e4daf193325934fa41b1b83fc6325e5df60f103b4840b4476f3a
 ```
 
 The build uses IPOPT 3.14.19, MUMPS 5.9.1, and MATLAB's installed MA57 runtime. It supports `mumps` and `ma57`; unsupported solver names return `info.status = -999`. SPRAL is neither built nor linked.
@@ -32,7 +32,7 @@ run('/path/to/repository/macos/tests/test_hs071_full_mumps59_ma57.m')
 run('/path/to/repository/macos/tests/test_invalid_solver_guard.m')
 ```
 
-Expected results are status 0 for HS071 with MUMPS and MA57, and status -999 for an unsupported solver. The binary was exercised with GPOPS-II examples in MATLAB R2024b, R2025a, R2025b, and R2026a without the previous MATLAB crashes.
+Expected results are status 0 for HS071 with MUMPS and MA57, and status -999 for unsupported solvers in both nested and flat option layouts. The binary was exercised with optimization test problems in MATLAB R2024b, R2025a, R2025b, and R2026a without the previous MATLAB crashes. The MUMPS 5.9.1 rebuild also passed multiple mesh-refinement iterations and difficult launch regressions with MUMPS and MA57.
 
 ## Rebuilding
 

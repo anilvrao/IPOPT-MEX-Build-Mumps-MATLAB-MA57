@@ -19,6 +19,14 @@ options.ipopt.linear_solver = 'spral';
 
 [~, info] = ipopt(1, funcs, options);
 fprintf('invalid solver status=%d\n', info.status);
+assert(info.status == -999, 'Nested invalid linear solver was not rejected.');
 if isfield(info, 'message')
   fprintf('%s\n', info.message);
 end
+
+flatOptions = options;
+flatOptions.linear_solver = flatOptions.ipopt.linear_solver;
+flatOptions = rmfield(flatOptions, 'ipopt');
+[~, flatInfo] = ipopt(1, funcs, flatOptions);
+fprintf('flat invalid solver status=%d\n', flatInfo.status);
+assert(flatInfo.status == -999, 'Flat invalid linear solver was not rejected.');

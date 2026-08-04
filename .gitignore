@@ -19,3 +19,12 @@ mex/
 !macos/bin/maca64/
 !macos/bin/maca64/ipopt.mexmaca64
 !macos/bin/maca64/SHA256SUMS.txt
+
+!linux/bin/
+!linux/bin/mexa64/
+!linux/bin/mexa64/ipopt.mexa64
+!linux/bin/mexa64/SHA256SUMS.txt
+!linux/src/mex/
+!linux/src/mex/IpoptInterfaceCommon.cc
+!linux/src/mex/IpoptInterfaceCommon.hh
+!linux/src/mex/ipopt.cc

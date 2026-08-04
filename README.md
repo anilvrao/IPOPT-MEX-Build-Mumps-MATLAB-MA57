@@ -1,6 +1,6 @@
 # MATLAB IPOPT MEX Builds
 
-This repository contains build materials and precompiled MATLAB IPOPT MEX files for Apple Silicon macOS and 64-bit Windows.
+This repository contains build materials and precompiled MATLAB IPOPT MEX files for Apple Silicon macOS, 64-bit Windows, and x86-64 Linux.
 
 Both builds provide exactly these linear solvers:
 
@@ -11,12 +11,13 @@ options.ipopt.linear_solver = 'ma57';
 
 Unsupported solver names are rejected before optimization starts and return `info.status = -999`. SPRAL is not built or linked.
 
-## 2026-08-02 release candidate
+## 2026-08-03 release candidate
 
 | Platform | Binary | SHA-256 |
 |---|---|---|
-| Apple Silicon macOS | `macos/bin/maca64/ipopt.mexmaca64` | `64808ff656291c947c2c7a171211d9913d8d668c62e1415b106b92aa907a5054` |
+| Apple Silicon macOS | `macos/bin/maca64/ipopt.mexmaca64` | `3b097ad0af33e4daf193325934fa41b1b83fc6325e5df60f103b4840b4476f3a` |
 | 64-bit Windows | `windows/bin/win64/ipopt.mexw64` | `adbf4bc9bf8d9d67c89cbfb3b7cd8cdd000c9dba4d08bff07975e406beda8835` |
+| x86-64 Linux | `linux/bin/mexa64/ipopt.mexa64` | `d29971b6b092764708594e207cafe27057ed06e32e140428f84732afc99e1e3c` |
 
 The two builds use:
 
@@ -27,13 +28,13 @@ The two builds use:
 - fault-containment patches for restoration and line-search failure paths
 - no SPRAL
 
-MA57 is not redistributed. The bridge loads the library supplied by the active MATLAB installation (`libmwma57.dylib` on macOS or `libmwma57.dll` on Windows).
+MA57 is not redistributed. The bridge loads the library supplied by the active MATLAB installation (`libmwma57.dylib` on macOS, `libmwma57.dll` on Windows, or `libmwma57.so` on Linux).
 
 ## Validation
 
-The macOS binary has been exercised with GPOPS-II examples using MUMPS and MA57 in MATLAB R2024b, R2025a, R2025b, and R2026a on Apple Silicon without the previous MATLAB crashes. The Windows binary passed the MUMPS, MA57, and invalid-solver HS071 tests in R2024a and R2026a; it was also exercised with GPOPS-II examples in R2024b and R2026a.
+The macOS binary has been exercised with optimization test problems using MUMPS and MA57 in MATLAB R2024b, R2025a, R2025b, and R2026a on Apple Silicon without the previous MATLAB crashes. The rebuilt MUMPS 5.9.1 binary passed HS071 with both solvers, both invalid-solver option layouts, multiple mesh-refinement iterations, and difficult launch regressions. The Windows binary passed the MUMPS, MA57, and invalid-solver HS071 tests in R2024a and R2026a; it was also exercised with optimization test problems in R2024b and R2026a.
 
-Ctrl-C during a native IPOPT solve is not claimed as a supported interruption mechanism. GPOPS-II can still be stopped between mesh-refinement iterations.
+Ctrl-C during a native IPOPT solve is not claimed as a supported interruption mechanism. Applications can still stop between separate IPOPT invocations.
 
 ## Layout
 
@@ -41,9 +42,10 @@ Ctrl-C during a native IPOPT solve is not claimed as a supported interruption me
 macos/                       Apple Silicon binary, sources, patches, scripts, tests
 windows/                     Windows binary, sources, patches, scripts, tests
 windows/BUILD_MANIFEST.txt   Exact Windows build and validation record
+linux/                       x86-64 Linux binary, sources, patches, and scripts
 ```
 
-See [macos/README.md](macos/README.md) and [windows/README.md](windows/README.md) for platform-specific build and test instructions.
+See [macos/README.md](macos/README.md), [windows/README.md](windows/README.md), and [linux/README.md](linux/README.md) for platform-specific instructions.
 
 ## macOS smoke test
 
