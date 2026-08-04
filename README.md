@@ -1,6 +1,6 @@
 # MATLAB IPOPT MEX Builds
 
-This repository contains build materials and precompiled MATLAB IPOPT MEX files for Apple Silicon macOS and 64-bit Windows.
+This repository contains build materials and precompiled MATLAB IPOPT MEX files for Apple Silicon macOS, 64-bit Windows, and x86-64 Linux.
 
 Both builds provide exactly these linear solvers:
 
@@ -17,6 +17,7 @@ Unsupported solver names are rejected before optimization starts and return `inf
 |---|---|---|
 | Apple Silicon macOS | `macos/bin/maca64/ipopt.mexmaca64` | `64808ff656291c947c2c7a171211d9913d8d668c62e1415b106b92aa907a5054` |
 | 64-bit Windows | `windows/bin/win64/ipopt.mexw64` | `adbf4bc9bf8d9d67c89cbfb3b7cd8cdd000c9dba4d08bff07975e406beda8835` |
+| x86-64 Linux | `linux/bin/mexa64/ipopt.mexa64` | `d29971b6b092764708594e207cafe27057ed06e32e140428f84732afc99e1e3c` |
 
 The two builds use:
 
@@ -27,7 +28,7 @@ The two builds use:
 - fault-containment patches for restoration and line-search failure paths
 - no SPRAL
 
-MA57 is not redistributed. The bridge loads the library supplied by the active MATLAB installation (`libmwma57.dylib` on macOS or `libmwma57.dll` on Windows).
+MA57 is not redistributed. The bridge loads the library supplied by the active MATLAB installation (`libmwma57.dylib` on macOS, `libmwma57.dll` on Windows, or `libmwma57.so` on Linux).
 
 ## Validation
 
@@ -41,9 +42,10 @@ Ctrl-C during a native IPOPT solve is not claimed as a supported interruption me
 macos/                       Apple Silicon binary, sources, patches, scripts, tests
 windows/                     Windows binary, sources, patches, scripts, tests
 windows/BUILD_MANIFEST.txt   Exact Windows build and validation record
+linux/                       x86-64 Linux binary, sources, patches, and scripts
 ```
 
-See [macos/README.md](macos/README.md) and [windows/README.md](windows/README.md) for platform-specific build and test instructions.
+See [macos/README.md](macos/README.md), [windows/README.md](windows/README.md), and [linux/README.md](linux/README.md) for platform-specific instructions.
 
 ## macOS smoke test
 
