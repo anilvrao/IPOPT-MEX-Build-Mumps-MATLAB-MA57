@@ -71,8 +71,12 @@ static int ipoptMexRequestedLinearSolver(mxArray const* options)
 {
   if (options == nullptr || !mxIsStruct(options)) return 0;
 
-  mxArray const* ipoptOptions = mxGetField(options, 0, "ipopt");
-  if (ipoptOptions == nullptr || !mxIsStruct(ipoptOptions)) return 0;
+  mxArray const* ipoptOptions = options;
+  mxArray const* nestedIpoptOptions = mxGetField(options, 0, "ipopt");
+  if (nestedIpoptOptions != nullptr) {
+    if (!mxIsStruct(nestedIpoptOptions)) return -1;
+    ipoptOptions = nestedIpoptOptions;
+  }
 
   mxArray const* linearSolver = mxGetField(ipoptOptions, 0, "linear_solver");
   if (linearSolver == nullptr || mxIsEmpty(linearSolver)) return 0;
