@@ -42,7 +42,7 @@ struct MatlabMa57 {
 
 [[noreturn]] void fatal(const char* msg)
 {
-  std::fprintf(stderr, "GPOPS-II MA57 bridge: %s\n", msg);
+  std::fprintf(stderr, "IPOPT MA57 bridge: %s\n", msg);
   std::fflush(stderr);
   std::abort();
 }
@@ -253,7 +253,7 @@ void bridge_ma57i(double* cntl, ipma57int* icntl)
 
 } // namespace
 
-extern "C" void gpopsRegisterMatlabMa57ForIpopt()
+extern "C" void ipoptMexRegisterMatlabMa57()
 {
   Ipopt::Ma57TSolverInterface::SetFunctions(&bridge_ma57a, &bridge_ma57b,
                                             &bridge_ma57c, &bridge_ma57e,

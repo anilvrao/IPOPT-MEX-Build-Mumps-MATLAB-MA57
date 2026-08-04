@@ -32,7 +32,7 @@ run('/path/to/repository/macos/tests/test_hs071_full_mumps59_ma57.m')
 run('/path/to/repository/macos/tests/test_invalid_solver_guard.m')
 ```
 
-Expected results are status 0 for HS071 with MUMPS and MA57, and status -999 for an unsupported solver. The binary was exercised with GPOPS-II examples in MATLAB R2024b, R2025a, R2025b, and R2026a without the previous MATLAB crashes.
+Expected results are status 0 for HS071 with MUMPS and MA57, and status -999 for an unsupported solver. The binary was exercised with optimization test problems in MATLAB R2024b, R2025a, R2025b, and R2026a without the previous MATLAB crashes.
 
 ## Rebuilding
 

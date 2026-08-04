@@ -36,7 +36,7 @@ Expected behavior:
 - `linear_solver='mumps'`: HS071 status 0
 - `linear_solver='ma57'`: HS071 status 0
 
-These tests passed in MATLAB R2024a and R2026a. GPOPS-II examples using MUMPS and MA57 were also exercised in R2024b and R2026a without MATLAB crashes.
+These tests passed in MATLAB R2024a and R2026a. Optimization test problems using MUMPS and MA57 were also exercised in R2024b and R2026a without MATLAB crashes.
 
 ## Runtime dependency check
 

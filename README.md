@@ -32,9 +32,9 @@ MA57 is not redistributed. The bridge loads the library supplied by the active M
 
 ## Validation
 
-The macOS binary has been exercised with GPOPS-II examples using MUMPS and MA57 in MATLAB R2024b, R2025a, R2025b, and R2026a on Apple Silicon without the previous MATLAB crashes. The Windows binary passed the MUMPS, MA57, and invalid-solver HS071 tests in R2024a and R2026a; it was also exercised with GPOPS-II examples in R2024b and R2026a.
+The macOS binary has been exercised with optimization test problems using MUMPS and MA57 in MATLAB R2024b, R2025a, R2025b, and R2026a on Apple Silicon without the previous MATLAB crashes. The Windows binary passed the MUMPS, MA57, and invalid-solver HS071 tests in R2024a and R2026a; it was also exercised with optimization test problems in R2024b and R2026a.
 
-Ctrl-C during a native IPOPT solve is not claimed as a supported interruption mechanism. GPOPS-II can still be stopped between mesh-refinement iterations.
+Ctrl-C during a native IPOPT solve is not claimed as a supported interruption mechanism. Applications can still stop between separate IPOPT invocations.
 
 ## Layout
 
